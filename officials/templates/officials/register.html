@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Hostel Management System</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet"> <!--Lobster-->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> <!--Roboto-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  {% load static %}
+  <link href="{% static 'authenticate/SignUp1.css' %}" rel="stylesheet"> 
+  
+</head>
+
+<body>
+    <nav class="navbar fixed-top" id="topnav">
+         <div></div>
+          <div class="justify-content-center">
+            <span style="color:darkorange; font-family: 'Lobster', cursive;" id="title">Hostel Management System</span>
+          </div>
+          <div>
+          </div>
+    </nav>
+
+
+      <div class="container ">
+          <div class="d-flex justify-content-center">
+               <div class="card">
+                    <div class="card-header ">
+                         <h3>Hostel Registration Form</h3>
+                    </div>
+                    <div class="card-body">
+                         <form class="form-horizontal" action="{% url 'officials:register' %}" method="POST">
+                          {% csrf_token %}
+                              
+                              {% if messages %}
+                                   
+                                   {% for message in messages %}
+                                        <p class="text-danger"> {{message}} </p>
+                                   {% endfor %}
+                                        
+                              {% endif %}
+               
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Registration No :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="text" class="form-control" name="regno" id="regno" placeholder="Registration No" required>
+                                        
+                                   </div>
+                              </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Roll No :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="text" class="form-control" name="rollno" id="rollno" placeholder="Roll No" required>
+                                        
+                                   </div>
+                              </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Full Name :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="text" class="form-control" name="name" id="name" placeholder="Full Name" required>
+                                        
+                                   </div>
+                              </div>
+                              
+                              <div class=" form-group">
+                                   <label  class="cols-sm-2 control-label">Year :</label>
+                                   <div class="cols-sm-10">
+                                   <select class="form-control w-100" id="comp-type" name="year"  required>
+                                       <option value="">Select year</option>
+                                       <option value="1">First Year</option>
+                                       <option value="2">Second Year</option>
+                                       <option value="3">Third Year</option>
+                                       <option value="4">Fourth Year</option>
+                                   </select>
+                              </div>
+                         </div>
+                         <div class=" form-group">
+                              <label  class="cols-sm-2 control-label">Branch :</label>
+                              <div class="cols-sm-10">
+                         <select class="form-control w-100" id="branch" name="branch"  required>
+                              <option value="">Select Branch</option>
+                              <option value="CSE">CSE</option>
+                              <option value="ECE">ECE</option>
+                              <option value="EEE">EEE</option>
+                              <option value="MECH">MECH</option>
+                              <option value="CHEM">CHEM</option>
+                              <option value="CIVIL">CIVIL</option>
+                              <option value="MME">MME</option>
+                              <option value="BIO">BIO</option>
+                          </select>
+                          </div>
+                         </div>
+                         <div class="form-group">
+                              <label  class="cols-sm-2 control-label">Gender :</label>
+                              <div class="cols-sm-10 form-inline">
+
+                                             <label for="Male">Male</label>
+                                             <input type="radio" class="form-control ml-2" name="type"  value="Male" required > 
+                                             <label for="Female" class="ml-5">Female</label>
+                                             <input type="radio" class="form-control ml-2" name="type"  value="Female" required >
+                              </div>
+                         </div>
+                         <div class="form-group">
+                              <label  class="cols-sm-2 control-label">PWD :</label>
+                              <div class="cols-sm-10 form-inline">
+
+                                             <label for="Yes">Yes</label>
+                                             <input type="radio" class="form-control ml-2" name="pwd"  value="Yes" required > 
+                                             <label for="No" class="ml-5">No</label>
+                                             <input type="radio" class="form-control ml-2" name="pwd"  value="No" required >
+                              </div>
+                         </div>
+
+                         
+                         <div class=" form-group">
+                              <label  class="cols-sm-2 control-label">Caste :</label>
+                              <div class="cols-sm-10">
+                              <select class="form-control w-100" id="caste" name="cast"  required>
+                                  <option value="">Select Category</option>
+                                  <option value="sc">SC</option>
+                                  <option value="st">ST/tribal</option>
+                                  <option value="obc">OBC</option>
+                                  <option value="oc">OC</option>
+                              </select>
+                         </div>
+                    </div>
+
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label"><strong><h5>Personal Details</h5></strong></label>
+                                   <div class="cols-sm-10"></div>
+                              </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Date Of Birth :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="date" name="dob" class="form-control" id="dob" min='1899-01-01' required>
+                                        
+                                   </div>
+                              </div>
+     
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Blood Group :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="text" class="form-control" name="blood"  placeholder="Blood Group" required>
+                                        
+                                   </div>
+                              </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Email ID :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="text" class="form-control" name="email"  placeholder="Email ID" required>
+                                        
+                                   </div>
+                              </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">StudentMobile No :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="text" class="form-control" name="ph_std" pattern="[0-9]{10}"  placeholder="Student Mobile No" required>
+                                        
+                                   </div>
+                              </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Parent/Gaurdian Mobile No :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="text" class="form-control" name="ph_p" pattern="[0-9]{10}" placeholder="Parent/Gaurdian Mobile No" required>
+                                        
+                                   </div>
+                              </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Emergency Contact No :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="text" class="form-control" name="ph_emr" pattern="[0-9]{10}" placeholder="Emergency Contact No" required>
+                                        
+                                   </div>
+                              </div>
+                              <div class="form-group">
+                                   <label for ="Details" class="cols-sm-2 control-label">Address :</label>
+                                        <textarea class="form-control" name="address" rows="4" placeholder="Address"></textarea>
+                                   
+                              </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Upload Your Passport sized Photograph :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="file" id="myfile" name="photo"><br><br>
+                                        
+                                   </div>
+                              </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label"><strong><h5>Fee Details</h5></strong></label>
+                                   <div class="cols-sm-10"></div>
+                              </div>
+                              <div class=" form-group">
+                                   <label  class="cols-sm-2 control-label">Hosteller/Day Scholar:</label>
+                                   <div class="cols-sm-10">
+
+                                   <select class="form-control w-100" id="host" name="hosteller" onchange="setEnabled1()"  required>
+                                       <option value="">Select Option</option>
+                                       <option value="H">Hosteller</option>
+                                       <option value="D">Day Scholar</option>
+                                   </select>
+
+                                   
+                              </div>
+                         </div>
+                              <div class="form-group">
+                                   <label  class="cols-sm-2 control-label">Amount Paid :</label>
+                                   <div class="cols-sm-10">
+                                        <input type="text" class="form-control" id="amount" name="amount"  placeholder="Amount Paid" required>
+                                        
+                                   </div>
+                              </div>
+                              <div class=" form-group">
+                                   <label  class="cols-sm-2 control-label">Bank :</label>
+                                   <div class="cols-sm-10">
+
+                                   <select class="form-control w-100" id="bank" name="bank" onchange="setEnabled()"   required>
+                                       <option value="">Select Bank</option>
+                                       <option value="sbi">State Bank Of INDIA</option>
+                                       <option value="ab">Andhra Bank</option>
+                                       <option value="ub">Union Bank</option>
+                                       <option value="bb">Bank of Baroda</option>
+                                       <option value="cab">Canara Bank</option>
+                                       <option value="cib">City Bank</option>
+                                       <option value="o">Others</option>
+                                   </select>
+
+                                   
+                              </div>
+                         </div>
+                         <div class="form-group">
+                              <label  class="cols-sm-2 control-label">If others type in the bank name :</label>
+                              <div class="cols-sm-10">
+                                   <input type="text" class="form-control" name="other" id="other" disabled="true"  placeholder=" Type in the bank name" required>
+                                   
+                              </div>
+                         </div>
+                         <div class="form-group">
+                              <label  class="cols-sm-2 control-label">Challan No/Transaction ID :</label>
+                              <div class="cols-sm-10">
+                                   <input type="text" class="form-control" id="ch_no" name="ch_no"  placeholder="Challan No/Transaction ID" required>
+                                   
+                              </div>
+                         </div>
+
+                         
+                         <div class="form-group">
+                              <label  class="cols-sm-2 control-label">Date of Payment :</label>
+                              <div class="cols-sm-10">
+                                   <input type="date" class="form-control" name="dop" id="dop" min='2020-01-01' required>
+                                   
+                              </div>
+                         </div>
+
+                         <div class="form-group">
+                              <label  class="cols-sm-2 control-label">Hostel Application Form (Signed by Parent)  :</label>
+                              <div class="cols-sm-10">
+                                   <input type="file" id="application" name="application"><br><br>
+                                   
+                              </div>
+                         </div>
+                         <div class="form-group">
+                              <label  class="cols-sm-2 control-label">Hostel Undertaking Form (Signed by Parent) :</label>
+                              <div class="cols-sm-10">
+                                   <input type="file" id="undertake" name="undertake"><br><br>
+                                   
+                              </div>
+                         </div>
+                         <div class="form-group">
+                              <label  class="cols-sm-2 control-label">Hostel Fee Reciept :</label>
+                              <div class="cols-sm-10">
+                                   <input type="file" id="recipt" name="recipt"><br><br>
+                                   
+                              </div>
+                         </div>
+                         <div class="form-group">
+                              <label  class="cols-sm-2 control-label">Affidavit for Day Scholars :</label>
+                              <div class="cols-sm-10">
+                                   <input type="file" id="afd"  name="afd"><br><br>
+                                   
+                              </div>
+                         </div>
+
+
+
+                              
+                              <div class="form-group row align-items-center sign-btn ml-2">
+                                   <input type="submit" id="submit" value="Submit" class="btn float-right sign_btn" >
+                                   <span class ="btn-space"></span>
+                                   </form>
+                                   
+                                   
+                              </div>
+                              <div class="row justify-content-center">
+                                   <a href="{% url 'officials:register' %}"><button class="btn float-right sign_btn">Cancel</button></a>
+                              </div>
+                              
+                    </div>
+               </div>
+          </div>     
+      </div>
+
+
+
+      <script>
+
+       
+
+          function setEnabled(){
+               let bank=document.getElementById('bank').value;
+               let other=document.getElementById('other');
+               if(bank === "o")
+               {
+                    other.disabled=false;
+               }
+               else{
+                    other.disabled=true;
+               }
+          }
+         function setEnabled1(){
+               let host=document.getElementById('host').value;
+               let bank=document.getElementById('bank');
+               let other=document.getElementById('other');
+               let amount=document.getElementById('amount');
+               let ch_no =document.getElementById('ch_no');
+               let dop=document.getElementById('dop');
+               let appli=document.getElementById('application');
+               let under=document.getElementById('undertake');
+               let recp=document.getElementById('recipt');
+               let afd=document.getElementById('afd');
+               if(host === "H")
+               {
+                    afd.disabled=true;
+                    bank.disabled=false;
+                    amount.disabled=false;
+                    ch_no.disabled=false;
+                    dop.disabled=false;
+                    appli.disabled=false;
+                    under.disabled=false;
+                    recp.disabled=false;
+               }
+               else if(host === 'D'){
+                    bank.disabled=true;
+                    amount.disabled=true;
+                    ch_no.disabled=true;
+                    dop.disabled=true;
+                    appli.disabled=true;
+                    under.disabled=true;
+                    recp.disabled=true;
+                    afd.disabled=false;
+                    
+                    
+               }
+               else{
+                    afd.disabled=false;
+                    bank.disabled=false;
+                    amount.disabled=false;
+                    ch_no.disabled=false;
+                    dop.disabled=false;
+                    appli.disabled=false;
+                    under.disabled=false;
+                    recp.disabled=false;
+               }
+          }
+   
+          window.onload = function(){
+               var today = new Date();
+               var dd = today.getDate();
+               var mm = today.getMonth()+1; //January is 0!
+               var yyyy = today.getFullYear();
+                if(dd<10){
+                       dd='0'+dd
+               } 
+                if(mm<10){
+                       mm='0'+mm
+               } 
+               
+               today = yyyy+'-'+mm+'-'+dd;
+               console.log('setting date min');
+               
+               document.getElementBy("dob").setAttribute("min", today);
+               document.getElementBy("dop").setAttribute("min", today);
+               
+           
+           }
+      </script>
+
+
+</body>
+</html>
