@@ -59,68 +59,13 @@ def signup(request):
                     newStudent = Institutestd.objects.get(regd_no = regno)
 
                     newCred = credentials(regd_no= Institutestd.objects.get(regd_no = regno), password=password1)
-                    
-
-                    if(newStudent.year == 1):
-                        blocks = Blocks.objects.filter(room_type='3S')
-                        for block in blocks:
-                            if block.gender == newStudent.gender:
-                                for floor in ['Ground','First','Second']:
-                                    for room in range(1,block.capacity+1):
-                                        if(details.objects.filter(block_id=block.block_id,floor=floor,room_no=room).count() < 3):
-                                            addStudent = details(regd_no=newStudent,block_id=Blocks.objects.get(block_id=block.block_id),floor=floor,room_no=room)
-                                            addStudent.save()
-
-                                            addAttendance = attendance(regd_no=newStudent)
-                                            addAttendance.save()
-
-                                            newCred.save()
-                                            
-                                            messages.success(request, 'User added to hostels successfully!')
-                                            return redirect('authenticate:signup')
-                        else:
-                            messages.success(request, 'No Vacancies!')
-                            return redirect('authenticate:signup')                            
-
-                    elif(newStudent.year == 2 or newStudent.year== 3):
-                        blocks = Blocks.objects.filter(room_type='2S')
-                        for block in blocks:
-                            if block.gender == newStudent.gender:
-                                for floor in ['Ground','First','Second']:
-                                    for room in range(1,block.capacity+1):
-                                        if(details.objects.filter(block_id=block.block_id,floor=floor,room_no=room).count() < 2):
-                                            addStudent = details(regd_no=newStudent,block_id=Blocks.objects.get(block_id=block.block_id),floor=floor,room_no=room)
-                                            addStudent.save()
-
-                                            addAttendance = attendance(regd_no=newStudent)
-                                            addAttendance.save()
-
-                                            newCred.save()
-                                            messages.success(request, 'User added to hostels successfully!')
-                                            return redirect('authenticate:signup')
-                        else:
-                            messages.success(request, 'No Vacancies!')
-                            return redirect('authenticate:signup') 
-
-                    else:
-                        blocks = Blocks.objects.filter(room_type='1S')
-                        for block in blocks:
-                            if block.gender == newStudent.gender:
-                                for floor in ['Ground','First','Second']:
-                                    for room in range(1,block.capacity+1):
-                                        if(details.objects.filter(block_id=block.block_id,floor=floor,room_no=room).count() < 1):
-                                            addStudent = details(regd_no=newStudent,block_id=Blocks.objects.get(block_id=block.block_id),floor=floor,room_no=room)
-                                            addStudent.save()
-
-                                            addAttendance = attendance(regd_no=newStudent)
-                                            addAttendance.save()                                        
-
-                                            newCred.save()
-                                            messages.success(request, 'User added to hostels successfully!')
-                                            return redirect('authenticate:signup')
-                        else:
-                            messages.success(request, 'No Vacancies!')
-                            return redirect('authenticate:signup') 
+                    newCred.save()
+                    addStudent = details(regd_no=newStudent)
+                    addStudent.save()
+                    addAttendance = attendance(regd_no=newStudent)
+                    addAttendance.save()
+                    messages.success(request, 'Student added to Hostels successfully')
+                    return redirect('authenticate:signup')
 
                 else:
                     messages.error(request, 'No student with given Registration no.')

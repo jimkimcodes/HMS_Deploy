@@ -37,7 +37,7 @@ class Institutestd (models.Model):
     address = models.CharField(max_length=100,null=False)
     photo = models.BinaryField(null=True, blank=True)
     hosteller = models.CharField(max_length=1, choices=OPTION ,null=False)
-    amount = models.IntegerField(null=True,default=0)
+    amount = models.IntegerField(null=True, blank=True,default=0)
     bank = models.CharField(max_length=100,null=True, blank=True)
     ch_no = models.CharField(max_length=64,null=True, blank=True)
     dop = models.DateField(null=True, blank=True)
@@ -75,7 +75,7 @@ class Blocks (models.Model):
     OPTION=(
           ('1S','One student per Room'),
           ('2S','Two students per Room'),
-          ('3S','Three students per Room'),
+          ('4S','Four students per Room'),
      )
 
     GENDER=(
@@ -86,7 +86,7 @@ class Blocks (models.Model):
     emp_id = models.OneToOneField(
         Officials,
         on_delete=models.CASCADE,
-        null=False
+        null=True, blank=True
     )
     block_id = models.IntegerField(primary_key=True)
     block_name=models.CharField(max_length=50,null=False)

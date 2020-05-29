@@ -374,53 +374,125 @@ def search(request):
 @csrf_exempt
 def blockSearch(request):
     send_blocks = Blocks.objects.all()
+    if request.POST.get('submit'):
+        block_name = Blocks.objects.get(block_id=request.POST['block']).block_name
+        block_gender = Blocks.objects.get(block_id=request.POST['block']).gender
+        block_care = Blocks.objects.get(block_id=request.POST['block']).emp_id_id
+        cap_room = (Blocks.objects.get(block_id=request.POST['block']).capacity)*3
+        room_type = Blocks.objects.get(block_id=request.POST['block']).room_type
+        
+        if room_type == '4S':   cap_stud = cap_room*3
+        elif room_type == '2S': cap_stud = cap_room*2
+        elif room_type == '1S': cap_stud = cap_room
+        
+        studs = details.objects.filter(block_id=request.POST['block'])
+        pres_stud = studs.count()
+        items_list = list()
+        for stud in studs:
+            info = Institutestd.objects.get(regd_no=str(stud.regd_no_id))
+            block_details = details.objects.get(regd_no=info)
+            if attendance.objects.get(regd_no=info).status=='':isPresent = 'Absent'
+            else: isPresent = attendance.objects.get(regd_no=info).status
+            items={
+                'stud':info,
+                'block_details':block_details,
+                'isPresent':isPresent
+            }
+            items_list.append(items)
 
-    if request.method == 'POST':
-            block_name = Blocks.objects.get(block_id=request.POST['block']).block_name
-            block_gender = Blocks.objects.get(block_id=request.POST['block']).gender
-            block_care = Blocks.objects.get(block_id=request.POST['block']).emp_id_id
-            cap_room = (Blocks.objects.get(block_id=request.POST['block']).capacity)*3
-            room_type = Blocks.objects.get(block_id=request.POST['block']).room_type
+        return render(request, 'officials/roomLayout.html', {
+            'items_list':(items_list), 
+            'send_blocks':send_blocks, 
+            'block_name':block_name,
+            'cap_room': cap_room,
+            'room_type' : room_type,
+            'cap_stud' : cap_stud,
+            'block_gender':block_gender,
+            'block_care':block_care,
+            'pres_stud':pres_stud,
+            'pres_room': (int(pres_stud))//(int(room_type[0])),
+            'vacant_room':cap_room - (int(pres_stud))//(int(room_type[0])) - (int(pres_stud))%(int(room_type[0])),
+            'partial_room':(int(pres_stud))%(int(room_type[0])),
+            })
 
-            if room_type == '3S':   cap_stud = cap_room*3
-            elif room_type == '2S': cap_stud = cap_room*2
-            elif room_type == '1S': cap_stud = cap_room
-            
-            studs = details.objects.filter(block_id=request.POST['block'])
-            pres_stud = studs.count()
-            items_list = list()
-            for stud in studs:
-                info = Institutestd.objects.get(regd_no=str(stud.regd_no_id))
-                block_details = details.objects.get(regd_no=info)
-                if attendance.objects.get(regd_no=info).status=='':isPresent = 'Absent'
-                else: isPresent = attendance.objects.get(regd_no=info).status
-                items={
-                    'stud':info,
-                    'block_details':block_details,
-                    'isPresent':isPresent
-                }
-                items_list.append(items)
+    if request.POST.get('Add'):
+        roll = (request.POST.get('roll'))
+        location = (request.POST.get('room')).split('-')
+        placing_block = location[0]
+        placing_floor = location[1]
+        placing_room = location[2]
+
+        if details.objects.filter(regd_no=roll).exists():
+            student = details.objects.get(regd_no=roll)
+            if student.block_id_id != None and student.room_no != None and student.floor != None:
+                messages.error(request, 'Student : '+str(roll)+' already alloted room!')
+                return redirect('officials:blockSearch')
+            else:
+                block_req = Blocks.objects.get(block_name=placing_block)
+                stud_req = Institutestd.objects.get(regd_no=roll)
+                if (stud_req.gender == block_req.gender) and ((stud_req.year == 1 and block_req.room_type == '4S') or (stud_req.year == 2 and block_req.room_type == '2S') or (stud_req.year == 3 and block_req.room_type == '2S') or (stud_req.year == 4 and block_req.room_type == '1S')):
+                    student.block_id = Blocks.objects.get(block_name=placing_block)
+                    student.room_no = int(placing_room)
+                    student.floor = placing_floor
+
+                    student.save()
+                    messages.success(request,'Student : '+str(roll)+' alloted room '+student.floor+'-'+str(student.room_no)+' in block '+str(student.block_id)+' : '+placing_block+'!')
+                    return redirect('officials:blockSearch')
+                else:
+                    messages.error(request, 'Incompatible Block for Student with roll no. : '+str(roll)+'!')
+                    return redirect('officials:blockSearch')
 
 
+        else:
+            messages.error(request, 'No Student with roll no. : '+str(roll)+' found!')
+            return redirect('officials:blockSearch')
+
+    if request.POST.get('change'):
+        block_name = request.POST.get('block')
+        block_req = Blocks.objects.get(block_name=block_name)
+        studs = details.objects.filter(block_id=block_req)
+        for stud in studs:
+            if request.POST.get(str(stud.regd_no)):
+                if request.POST.get(str(stud.regd_no)) == 'None':
+                    stud.block_id = None
+                    stud.room_no = None
+                    stud.floor = None
+                    stud.save()
+
+                    messages.success(request, 'Student : '+str(roll)+' removed from block : '+block_name+'!')
+                    return redirect('officials:blockSearch')
 
 
-            return render(request, 'officials/roomLayout.html', {
-                'items_list':(items_list), 
-                'send_blocks':send_blocks, 
-                'block_name':block_name,
-                'cap_room': cap_room,
-                'room_type' : room_type,
-                'cap_stud' : cap_stud,
-                'block_gender':block_gender,
-                'block_care':block_care,
-                'pres_stud':pres_stud,
-                'pres_room': (int(pres_stud))//(int(room_type[0])),
-                'vacant_room':cap_room - (int(pres_stud))//(int(room_type[0])) - (int(pres_stud))%(int(room_type[0])),
-                'partial_room':(int(pres_stud))%(int(room_type[0])),
-                })
+                else:
+                    roll = request.POST.get(str(stud.regd_no))
+                    stud_req = Institutestd.objects.get(regd_no=roll)
+                    student = details.objects.get(regd_no=roll)
+                    if (stud_req.gender == block_req.gender) and ((stud_req.year == 1 and block_req.room_type == '4S') or (stud_req.year == 2 and block_req.room_type == '2S') or (stud_req.year == 3 and block_req.room_type == '2S') or (stud_req.year == 4 and block_req.room_type == '1S')):
+                        student.block_id = stud.block_id
+                        student.room_no = stud.room_no
+                        student.floor = stud.floor
+                        student.save()
+
+                        stud.block_id = None
+                        stud.room_no = None
+                        stud.floor = None
+                        stud.save()
+
+                        messages.success(request,'Student : '+str(roll)+' alloted room '+student.floor+'-'+str(student.room_no)+' in block '+str(student.block_id)+' : '+block_name+'!')
+                        messages.success(request, 'Student : '+str(stud.regd_no)+' removed from block : '+block_name+'!')
+                        return redirect('officials:blockSearch')
+                    else:
+                        messages.error(request, 'Incompatible Block for Student with roll no. : '+str(roll)+'!')
+                        return redirect('officials:blockSearch')
+
 
 
     return render(request, 'officials/roomLayout.html',{'send_blocks':send_blocks})
+
+
+
+
+    
 
 def register (request):
      if request.method == 'POST':
