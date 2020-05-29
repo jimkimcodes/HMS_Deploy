@@ -13,8 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> <!--Roboto-->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-  {% load static %}
-  <link href="{% static 'authenticate/SignUp1.css' %}" rel="stylesheet"> 
+ {% load static %}
+ <!-- <link href="{% static 'authenticate/SignUp1.css' %}" rel="stylesheet"> -->
+  <link  rel="stylesheet" href ="{%static  'officials/SingUp1.css' %}" >
   
 </head>
 
@@ -31,11 +32,12 @@
 
       <div class="container ">
           <div class="d-flex justify-content-center">
-               <div class="card">
+               <div class="card-std">
                     <div class="card-header ">
                          <h3>Hostel Registration Form</h3>
                     </div>
                     <div class="card-body">
+                    
                          <form class="form-horizontal" action="{% url 'officials:register' %}" method="POST">
                           {% csrf_token %}
                               
@@ -46,7 +48,12 @@
                                    {% endfor %}
                                         
                               {% endif %}
+                              
+                              
+                              
                
+                                                            <div class="row">
+                                   <div class="column-left">
                               <div class="form-group">
                                    <label  class="cols-sm-2 control-label">Registration No :</label>
                                    <div class="cols-sm-10">
@@ -102,9 +109,9 @@
                               <div class="cols-sm-10 form-inline">
 
                                              <label for="Male">Male</label>
-                                             <input type="radio" class="form-control ml-2" name="type"  value="Male" required > 
+                                             <input type="radio" class="form-control ml-2" name="type"  value="student" required > 
                                              <label for="Female" class="ml-5">Female</label>
-                                             <input type="radio" class="form-control ml-2" name="type"  value="Female" required >
+                                             <input type="radio" class="form-control ml-2" name="type"  value="official" required >
                               </div>
                          </div>
                          <div class="form-group">
@@ -130,7 +137,9 @@
                                   <option value="oc">OC</option>
                               </select>
                          </div>
-                    </div>
+                     </div>
+                     </div>
+                     <div class="column-left">
 
                               <div class="form-group">
                                    <label  class="cols-sm-2 control-label"><strong><h5>Personal Details</h5></strong></label>
@@ -179,6 +188,9 @@
                                         
                                    </div>
                               </div>
+                         
+                         
+                         
                               <div class="form-group">
                                    <label for ="Details" class="cols-sm-2 control-label">Address :</label>
                                         <textarea class="form-control" name="address" rows="4" placeholder="Address"></textarea>
@@ -191,6 +203,10 @@
                                         
                                    </div>
                               </div>
+                     </div>
+                         
+                              <div class="column-right">
+                         
                               <div class="form-group">
                                    <label  class="cols-sm-2 control-label"><strong><h5>Fee Details</h5></strong></label>
                                    <div class="cols-sm-10"></div>
@@ -285,6 +301,9 @@
                                    
                               </div>
                          </div>
+                         </div>
+                         </div>
+
 
 
 
@@ -301,6 +320,7 @@
                               </div>
                               
                     </div>
+                       
                </div>
           </div>     
       </div>
