@@ -459,7 +459,7 @@ def blockSearch(request):
                     stud.floor = None
                     stud.save()
 
-                    messages.success(request, 'Student : '+str(roll)+' removed from block : '+block_name+'!')
+                    messages.success(request, 'Student : '+str(stud.regd_no)+' removed from block : '+block_name+'!')
                     return redirect('officials:blockSearch')
 
 
