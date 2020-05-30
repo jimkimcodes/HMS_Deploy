@@ -27,6 +27,9 @@ def official_home(request):
             raise Http404("You are currently not appointed any block! Please contact Admin")
 
         students = details.objects.filter(block_id=block_details.block_id)
+        stud_roll = []
+        for stud in students:
+            stud_roll.append(stud.regd_no)
     
         present_list = list()
         absent_list = list()
