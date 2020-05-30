@@ -49,7 +49,7 @@ def official_home(request):
                     }
                 )
 
-        complaints = list(Complaints.objects.filter(status='Registered'))
+        complaints = list(Complaints.objects.filter(status='Registered', regd_no__in=stud_roll))
 
         if request.method == 'POST':
             for item in complaints:
