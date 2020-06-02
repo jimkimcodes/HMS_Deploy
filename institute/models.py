@@ -25,7 +25,7 @@ class Institutestd (models.Model):
     name = models.CharField(max_length=100,null=False)
     branch = models.CharField(max_length=3,choices=BRANCHES,null=False)
     gender = models.CharField(max_length=7,choices=GENDER,null=False)
-    pwd = models.CharField(max_length=1,choices=OPTION,null=False)
+    pwd = models.CharField(max_length=5,choices=OPTION,null=False)
     caste = models.CharField(max_length=25,null=False)
     year = models.IntegerField(null=False)
     dob = models.DateField(null=False)
@@ -35,16 +35,16 @@ class Institutestd (models.Model):
     ph_phone = models.CharField(null=False, max_length=10)
     emr_phone = models.CharField(null=False, max_length=10)
     address = models.CharField(max_length=100,null=False)
-    photo = models.BinaryField(null=True, blank=True)
+    photo = models.FileField(null=True, blank=True)
     hosteller = models.CharField(max_length=1, choices=OPTION ,null=False)
     amount = models.IntegerField(null=True, blank=True,default=0)
     bank = models.CharField(max_length=100,null=True, blank=True)
     ch_no = models.CharField(max_length=64,null=True, blank=True)
     dop = models.DateField(null=True, blank=True)
-    application = models.BinaryField(null=True, blank=True)
-    undertake = models.BinaryField(null=True, blank=True)
-    recipt = models.BinaryField(null=True, blank=True)
-    afd = models.BinaryField(null=True, blank=True)
+    application = models.FileField(null=True, blank=True)
+    undertake = models.FileField(null=True, blank=True)
+    recipt = models.FileField(null=True, blank=True)
+    afd = models.FileField(null=True, blank=True)
     paid = models.CharField(max_length=1,choices=OPTION ,null=False)
 
     def __str__(self):
@@ -59,11 +59,20 @@ class Officials (models.Model):
         ('Chief-Warden','ChiefWarden'),
 
     )
+    BRANCHES=(
+        ('CSE','Computer Science Engineering'),
+        ('ECE','Electronic and Communication Engineering'),
+        ('EEE','Electrical and Electronic Engineering'),
+        ('CHE','Chemical Engineering'),
+        ('MME','Metalurgy Engineering'),
+        ('MEC','Mechanical Engineering'),
+        ('CIV','Civil Engineering'),
+    )
 
     emp_id = models.IntegerField(primary_key=True,null=False)
     name = models.CharField(max_length=100)
     designation = models.CharField(max_length=20,choices=EMP)
-    address = models.CharField(max_length=100)
+    branch=models.CharField(max_length=20,choices=BRANCHES,default="CSE")
     phone = models.CharField(max_length=10, null=False)
     email_id = models.CharField(max_length=50)
 
