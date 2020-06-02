@@ -13,6 +13,8 @@ from workers.models import Medical, Workers
 from workers.models import attendance as ATTWORKER
 from django.db.models import QuerySet
 from officials.models import WaterCan
+from authenticate.models import credentials
+import re
 
 
 # Create your views here.
@@ -499,16 +501,21 @@ def blockSearch(request):
 
 def register (request):
      if request.method == 'POST':
-          if request.POST["submit"]:
+          print(request.POST)
+          if request.POST.get("submit"):
                regdno=request.POST["regno"]
                rollno=request.POST["rollno"]
                name=request.POST["name"]
                year=request.POST["year"]
                branch=request.POST["branch"]
                gender=request.POST["type"]
+               print(gender)
                pwd=request.POST["pwd"]
-               cast=request.POST["cast"]
+               print(pwd)
+               cast=request.POST["caste"]
                dob=request.POST["dob"]
+               print("hi")
+               print(type(dob))
                bgp=request.POST["blood"]
                email=request.POST["email"]
                ph_std=request.POST["ph_std"]
@@ -517,59 +524,105 @@ def register (request):
                address=request.POST["address"]
                photo=request.POST["photo"]
                hosteller=request.POST["hosteller"]
-               amount=request.POST["amount"]
-               bank=request.POST["bank"]
-               ch_no=request.POST["ch_no"]
-               dop=request.POST['dop']
-               appli=request.POST["application"]
-               undertake=request.POST["undertake"]
-               recipt=request.POST["reipt"]
-               afd=request.POST["afd"]
+               if pwd =="Yes":
+                    pwd='Y'
+               else :
+                    pwd='N'
+               try :
+                    amount=request.POST["amount"]
+                    bank=request.POST["bank"]
+                    ch_no=request.POST["ch_no"]
+                    dop=request.POST['dop']
+                    appli=request.POST["application"]
+                    undertake=request.POST["undertake"]
+                    recipt=request.POST["recipt"]
+               except :
+                    amount=None
+                    bank=None
+                    ch_no=None
+                    dop=None
+                    appli=None
+                    undertake=None
+                    recipt=None
+               try :
+                    afd=request.POST["afd"]
+               except :
+                    afd=None
+
+               
+               if hosteller == "H":
+                    hosteller="Y"
+               else:
+                    hosteller="N"
                
                if Institutestd.objects.filter(regd_no=regdno).exists():
-                    messages.error(request, 'Already Registered!')
+                    messages.error(request, 'Already student is present with this id so editing details!')
+                    sstd=Institutestd.objects.filter(regd_no=regdno).delete()
                else :
-                    temp="No"
-                    if amount !=None:
-                         temp="Yes"
-                    if bank == None and ch_no == None and dop==None and appli ==None and undertake ==None and recipt == None:
+                    temp="N"
+                    if amount !=None and hosteller == "Y":
+                         temp="Y"
+                    if hosteller == "N": #bank == None and ch_no == None and dop==None and appli ==None and undertake ==None and recipt == None:
                          bank="null"
                          ch_no="null"
-                         dop="null"
+                         dop= None
                          appli="null"
                          undertake="null"
                          recipt="null"
-                    elif bank != None and ch_no != None and dop!=None and appli !=None and undertake !=None and recipt != None and afd==None:
+                    elif hosteller == "Y": #bank != None and ch_no != None and dop!=None and appli !=None and undertake !=None and recipt != None and afd==None:
                          afd="null"
                     else :
                          messages.error(request, 'Invalid Registration!')
                          return redirect('officials:register')
-                    acc=Institutestd(regdno,rollno,name,year,branch,gender,pwd,cast,dob,bgp,email,ph_std,ph_p,ph_emr,address,photo,hosteller,amount,bank,ch_no,dop,appli,undertake,recipt,afd,temp)
+                    acc=Institutestd(regdno,rollno,name,branch,gender,pwd,cast,year,dob,bgp,email,ph_std,ph_p,ph_emr,address,photo,hosteller,amount,bank,ch_no,dop,appli,undertake,recipt,afd,temp)
                     acc.save()
                     messages.success(request, ' Registration Successful!')
-                    return redirect('officials:register')
+                    if hosteller =='N':
+                        return redirect('officials:register')
+                    else :
+                        return redirect('officials:blockSearch')
      return render(request,'officials/register.html',{})
 
 def registeremp (request):
+     std=Blocks.objects.all()
      if request.method == 'POST':
-          if request.POST["submit"]:
-               empid=request.POST["regno"]
+          print(request.POST)
+          if request.POST.get("submit_btn"):
+               empid=request.POST["empid"]
                name=request.POST["name"]
                desig=request.POST['desig']
                gender=request.POST["type"]
                email=request.POST["email"]
-               address=request.POST["address"]
                ph=request.POST['ph']
-              
-               
+               block_id=request.POST['block']
+               branch=request.POST['branch']
+               print(branch)
+               print(empid)
                if Officials.objects.filter(emp_id=empid).exists():
-                    messages.error(request, 'Aldready Registered!')
+                    messages.error(request, 'Aldready Registered! now being edited')
+                    temp=Officials.objects.get(emp_id=empid)
+                    b=Blocks.objects.get(emp_id=temp)
+                    b.emp_id=Noneb.save()
+                    Officials.objects.get(emp_id=empid).delete()
+
                else :
-                    acc=Officials(empid,name,desig,address,ph,email)
+                    acc=Officials(empid,name,desig,branch,ph,email)
                     acc.save()
-                    messages.success(request, ' Registration Successful!')
-                    return redirect('officials:registeremp')
-     return render(request,'officials/register-emp.html',{})
+               if block_id!="null":
+                    em=Blocks.objects.get(block_id=block_id)
+                    print(em)
+                    if em.emp_id :
+                         messages.error(request,"Aldready block has been assigned and changing now!")
+                         em.emp_id=Officials.objects.get(emp_id=empid)
+                         em.save()
+                    else:
+                         em.emp_id=Officials.objects.get(emp_id=empid)
+                         em.save()
+               messages.success(request,"Registration Success!")
+               return redirect('officials:registeremp')
+               
+                    
+     return render(request,'officials/register-emp.html',{'std':std})
 
 
 @csrf_exempt
@@ -601,3 +654,211 @@ def watercan(request):
             return render(request, 'officials/water-can.html', {'dateCount':dateCount})
 
     return render(request, 'officials/water-can.html')
+
+
+
+
+def student_list(request):
+    students=Institutestd.objects.all()
+    list_of_students=list()
+    for stud in students :
+        print("came")
+        print(request.POST)
+        x=details.objects.filter(regd_no=stud)
+        print("came")
+        print(stud.regd_no)
+        try :
+            block_id=str(details.objects.get(regd_no=str(stud.regd_no)).block_id)
+            print("came")
+            block=int(re.search(r'\d+', block_id).group(0))
+            print("came")
+            list_of_students.append({
+                'regd_no':str(stud.regd_no),
+                'name':stud.name,
+                'ph':str(stud.phone),
+                'year':str(stud.year),
+                'floor':details.objects.get(regd_no=str(stud.regd_no)).floor,
+                'room_no':details.objects.get(regd_no=str(stud.regd_no)).room_no,
+                'block_id':details.objects.get(regd_no=str(stud.regd_no)).block_id,
+                'block':Blocks.objects.get(block_id=str(block)).block_name,
+
+            })
+            
+        except:
+            #messages.error(request,"No students are there!")
+            list_of_students.append({
+                'regd_no':str(stud.regd_no),
+                'name':stud.name,
+                'ph':str(stud.phone),
+                'year':str(stud.year),
+                'floor':"None",
+                'room_no':"None",
+                'block_id':"None",
+                'block':"None",
+
+            })
+            
+    return render(request,'officials/student_list.html',{'list_of_students':list_of_students})
+def studentdelete (request):
+    students=Institutestd.objects.all()
+    if request.method=='POST':
+        print(request.POST)
+        print("came in")
+        for stud in students:
+            print("came in")
+            if request.POST.get("d"+str(stud.regd_no)):
+                print(stud.regd_no)
+                try:
+                    Institutestd.objects.get(regd_no=str(stud.regd_no)).delete()
+                    #Institutestd.objects.get(regd_no=str(stud.regd_no)).delete()
+                    credentials.objects.get(regd_no=str(stud.regd_no)).delete()
+                    attendance.objects.get(regd_no=str(stud.regd_no)).delete()
+                except:
+                    pass
+                messages.success(request,str(stud.regd_no)+" is deleted!")
+                return redirect('officials:student_list')
+            elif request.POST.get("e"+str(stud.regd_no)):
+                #response=redirect('officials:register_edit')
+                #response.set_cookie('regd_no_edit',str(stud.regd_no))
+                #return response
+                std=Institutestd.objects.get(regd_no=str(stud.regd_no))
+                return render(request,'officials/register.html',{'std':std})
+def emp_list(request):
+    emp=Officials.objects.all()
+    list_of_emp=list()
+    if emp == None:
+        messages.error(request,"No officials are present!")
+        return redirect("official:registeremp")
+    for em in emp:
+        print("came")
+        try :
+            block=Blocks.objects.get(emp_id=em).block_name
+            list_of_emp.append({'block':block,'emp_id':em.emp_id,'name':em.name,'branch':em.branch,'desig':em.designation,'ph':em.phone,'email':em.email_id,})
+        except:
+            list_of_emp.append({'block':"",'emp_id':em.emp_id,'name':em.name,'branch':em.branch,'desig':em.designation,'ph':em.phone,'email':em.email_id,})
+    return render(request,'officials/emp_list.html',{'emp':list_of_emp})
+        
+def empdelete (request):
+    emp=Officials.objects.all()
+    if request.method=='POST':
+        print(request.POST)
+        print("came in")
+        for stud in emp:
+            print("came in")
+            print(stud.emp_id)
+            if request.POST.get("d"+str(stud.emp_id)):
+                print(stud.emp_id)
+                Officials.objects.get(emp_id=str(stud.emp_id)).delete()
+                #Institutestd.objects.get(regd_no=str(stud.regd_no)).delete()
+                try:
+                    credentials.objects.get(emp_id=str(stud.emp_id)).delete()
+                    Blocks.objects.get(emp_id=stud).delete()
+                except:
+                    pass
+                messages.success(request,str(stud.emp_id)+" is deleted!")
+                return redirect('officials:emp_list')
+            elif request.POST.get("e"+str(stud.emp_id)):
+                #response=redirect('officials:register_edit')
+                #response.set_cookie('regd_no_edit',str(stud.regd_no))
+                #return response
+                std=Blocks.objects.all()
+                employee=Officials.objects.get(emp_id=str(stud.emp_id))
+                block=Blocks.objects.get(emp_id=employee)
+
+                return render(request,'officials/register-emp.html',{'std':std,'employee':employee,'block':block})
+
+def registerworker(request):
+    work=Workers.objects.all()
+    if request.method == 'POST':
+        if request.POST.get("submit_btn"):
+            print(request.POST)
+            staff_id=request.POST["empid"]
+            name=request.POST["name"]
+            gender=request.POST["type"]
+            desig=request.POST["desig"]
+            email=request.POST["email"]
+            phone=request.POST["ph"]
+            block_id=request.POST["block"]
+            print(block_id)
+            try:
+                block=int(re.search(r'\d+', block_id).group(0))
+                #block=Blocks.objects.get(block_id=block)
+            except: 
+                block=None
+            if Workers.objects.filter(staff_id=staff_id).exists():
+                Workers.objects.filter(staff_id=staff_id).delete()
+                messages.error(request,"Aldready staff exists so editing will be done!")
+            s=Workers(staff_id,name,desig,gender,phone,email,block)
+            s.save()
+            messages.success(request,"Successfully registered!")
+    std=Blocks.objects.all()
+    return render(request,"officials/register_Staff.html",{'std':std})
+def workers_list(request):
+    worker=Workers.objects.all()
+    if worker == None:
+        messages.error(request,"Workers list is empty !")
+        return render(request,"official/workerslist.html",{'emp':worker})
+    list_of_emp=list()
+    for em in worker:
+        print("came in")
+        try:
+            
+            block=Blocks.objects.get(block_id=em.block_id).block_name
+        except:
+            block="None"
+            print(block)
+        list_of_emp.append({
+            'staff_id':em.staff_id,
+            'name':em.name,
+            'desig':em.designation,
+            'gender':em.gender,
+            'ph':em.phone,
+            'block':block,
+            
+        })
+    return render(request,"officials/workerslist.html",{'emp':list_of_emp})
+def workerdelete (request):
+    emp=Workers.objects.all()
+    if request.method=='POST':
+        print(request.POST)
+        print("came in")
+        for stud in emp:
+            print("came in")
+            print(stud.staff_id)
+            if request.POST.get("d"+str(stud.staff_id)):
+                print(stud.staff_id)
+                Workers.objects.get(staff_id=str(stud.staff_id)).delete()
+                #Institutestd.objects.get(regd_no=str(stud.regd_no)).delete()
+                try:
+                    credentials.objects.get(staff_id=str(stud.staff_id)).delete()
+                    
+                except:
+                    pass
+                messages.success(request,str(stud.staff_id)+" is deleted!")
+                return redirect('officials:workers_list')
+            elif request.POST.get("e"+str(stud.staff_id)):
+                #response=redirect('officials:register_edit')
+                #response.set_cookie('regd_no_edit',str(stud.regd_no))
+                #return response
+                std=Blocks.objects.all()
+                employee=Workers.objects.get(staff_id=str(stud.staff_id))
+                print(employee.block_id)
+                try:
+                    
+                    block=Blocks.objects.get(block_id=str(employee.block_id)).block_name
+                    
+                except:
+                    block="None"
+                print(block)
+                return render(request,'officials/register_staff.html',{'std':std,'employee':employee,'block':block})
+    
+    
+
+
+                
+    
+
+
+         
+
+
