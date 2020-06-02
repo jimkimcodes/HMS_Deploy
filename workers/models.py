@@ -12,12 +12,16 @@ class Workers(models.Model):
         ('Gym Trainer','Gym Trainer'),
         ('PT/Games Coach','PT/Games Coach'),
     )
+    GENDER=(
+        ('Male','Male'),
+        ('Female','Female'),
+    )
 
     staff_id = models.IntegerField(primary_key=True,null=False)
     name = models.CharField(max_length=100)
     designation = models.CharField(max_length=50,choices=EMP)
-    address = models.CharField(max_length=100)
-    phone = models.IntegerField(null=False)
+    gender=models.CharField(max_length=10,choices=GENDER,default="Male")
+    phone = models.CharField(max_length=50,null=False)
     email_id = models.CharField(max_length=50, null=True, blank=True)
     block = models.ForeignKey(Blocks, on_delete=models.CASCADE, null=True, blank=True)
 
