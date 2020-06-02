@@ -43,7 +43,7 @@
                               {% if messages %}
                                    
                                    {% for message in messages %}
-                                        <p class="text-danger"> {{message}} </p>
+                                        <script>alert('{{message}}');</script>
                                    {% endfor %}
                                         
                               {% endif %}
@@ -51,7 +51,11 @@
                               <div class="form-group">
                                    <label  class="cols-sm-2 control-label">Employee ID :</label>
                                    <div class="cols-sm-10">
-                                        <input type="text" class="form-control" name="empid" id="regno" placeholder="Employee ID" required>
+                                   {%if employee%}
+                                        <input type="text" class="form-control" value="{{employee.emp_id}}" name="empid" id="empid" placeholder="Employee ID" required> 
+                                   {%else%}     
+                                        <input type="text" class="form-control" name="empid" id="empid" placeholder="Employee ID" required>
+                                   {%endif%}
                                         
                                    </div>
                               </div>
@@ -59,53 +63,212 @@
                               <div class="form-group">
                                    <label  class="cols-sm-2 control-label">Full Name :</label>
                                    <div class="cols-sm-10">
+                                   {%if employee%}
+                                        <input type="text" value="{{employee.name}}" class="form-control" name="name" id="name" placeholder="Full Name" required>
+                                   {%else%}
                                         <input type="text" class="form-control" name="name" id="name" placeholder="Full Name" required>
-                                        
+                                   {%endif%}     
                                    </div>
                               </div>
                               <div class="form-group">
                                    <label  class="cols-sm-2 control-label">Gender :</label>
                                    <div class="cols-sm-10 form-inline">
      
+                                                  {% if employee%}
+                                                  {% if employee.gender == 'Male' %}
+                                                       <label for="Male">Male</label>
+                                                       <input type="radio" class="form-control ml-2" name="type" checked value="Male" required > 
+                                                       <label for="Female" class="ml-5">Female</label>
+                                                       <input type="radio" class="form-control ml-2" name="type"  value="Female" required >
+                                                  {% else %}
+                                                       <label for="Male">Male</label>
+                                                       <input type="radio" class="form-control ml-2" name="type"  value="Male" required > 
+                                                       <label for="Female" class="ml-5">Female</label>
+                                                       <input type="radio" class="form-control ml-2" name="type" checked  value="Female" required >
+                                                  {% endif %}
+                                             {% else %}
                                                   <label for="Male">Male</label>
                                                   <input type="radio" class="form-control ml-2" name="type"  value="Male" required > 
                                                   <label for="Female" class="ml-5">Female</label>
                                                   <input type="radio" class="form-control ml-2" name="type"  value="Female" required >
+                                             {% endif %}
                                    </div>
                               </div>
                               <div class="form-group">
                                    <label  class="cols-sm-2 control-label">Designation :</label>
                                    <div class="cols-sm-10">
+                                   {%if employee%}
+                                        <input type="text" value="{{employee.designation}}" class="form-control" name="desig" id="name" placeholder="Designation" required>
+                                   {%else%}
                                         <input type="text" class="form-control" name="desig" id="name" placeholder="Designation" required>
-                                        
+                                   {%endif%}
                                    </div>
                               </div>
+                              <div class=" form-group">
+                              <label  class="cols-sm-2 control-label">Branch :</label>
+                              <div class="cols-sm-10">
+                              {% if employee %}
+                              {% if employee.branch == 'CSE' %}
+                                   <select class="form-control w-100" id="branch" name="branch"  required>
+                                        <option value="">Select Branch</option>
+                                        <option value="CSE"selected >CSE</option>
+                                        <option value="ECE">ECE</option>
+                                        <option value="EEE">EEE</option>
+                                        <option value="MECH">MECH</option>
+                                        <option value="CHEM">CHEM</option>
+                                        <option value="CIVIL">CIVIL</option>
+                                        <option value="MME">MME</option>
+                                        <option value="BIO">BIO</option>
+                                   </select>
+                              {% elif employee.branch == 'ECE' %}
+                                   <select class="form-control w-100" id="branch" name="branch"  required>
+                                        <option value="">Select Branch</option>
+                                        <option value="CSE" >CSE</option>
+                                        <option value="ECE" selected>ECE</option>
+                                        <option value="EEE">EEE</option>
+                                        <option value="MECH">MECH</option>
+                                        <option value="CHEM">CHEM</option>
+                                        <option value="CIVIL">CIVIL</option>
+                                        <option value="MME">MME</option>
+                                        <option value="BIO">BIO</option>
+                                   </select>
+                              {% elif employee.branch == 'EEE' %}
+                                        <select class="form-control w-100" id="branch" name="branch"  required>
+                                             <option value="">Select Branch</option>
+                                             <option value="CSE" >CSE</option>
+                                             <option value="ECE">ECE</option>
+                                             <option value="EEE" selected>EEE</option>
+                                             <option value="MECH">MECH</option>
+                                             <option value="CHEM">CHEM</option>
+                                             <option value="CIVIL">CIVIL</option>
+                                             <option value="MME">MME</option>
+                                             <option value="BIO">BIO</option>
+                                        </select>
+                              {% elif employee.branch == 'MECH' %}
+                                   <select class="form-control w-100" id="branch" name="branch"  required>
+                                        <option value="">Select Branch</option>
+                                        <option value="CSE" >CSE</option>
+                                        <option value="ECE">ECE</option>
+                                        <option value="EEE">EEE</option>
+                                        <option value="MECH" selected>MECH</option>
+                                        <option value="CHEM">CHEM</option>
+                                        <option value="CIVIL">CIVIL</option>
+                                        <option value="MME">MME</option>
+                                        <option value="BIO">BIO</option>
+                                   </select>
+                              {% elif employee.branch == 'CHEM' %}
+                                   <select class="form-control w-100" id="branch" name="branch"  required>
+                                        <option value="">Select Branch</option>
+                                        <option value="CSE" >CSE</option>
+                                        <option value="ECE">ECE</option>
+                                        <option value="EEE">EEE</option>
+                                        <option value="MECH">MECH</option>
+                                        <option value="CHEM" selected>CHEM</option>
+                                        <option value="CIVIL">CIVIL</option>
+                                        <option value="MME">MME</option>
+                                        <option value="BIO">BIO</option>
+                                   </select>
+                              {% elif employee.branch == 'CIVIL' %}
+                                   <select class="form-control w-100" id="branch" name="branch"  required>
+                                        <option value="">Select Branch</option>
+                                        <option value="CSE" >CSE</option>
+                                        <option value="ECE">ECE</option>
+                                        <option value="EEE">EEE</option>
+                                        <option value="MECH">MECH</option>
+                                        <option value="CHEM">CHEM</option>
+                                        <option value="CIVIL" selected>CIVIL</option>
+                                        <option value="MME">MME</option>
+                                        <option value="BIO">BIO</option>
+                                   </select>
+                              {% elif employee.branch == 'MME' %}
+                                   <select class="form-control w-100" id="branch" name="branch"  required>
+                                        <option value="">Select Branch</option>
+                                        <option value="CSE" >CSE</option>
+                                        <option value="ECE">ECE</option>
+                                        <option value="EEE">EEE</option>
+                                        <option value="MECH">MECH</option>
+                                        <option value="CHEM">CHEM</option>
+                                        <option value="CIVIL">CIVIL</option>
+                                        <option value="MME" selected>MME</option>
+                                        <option value="BIO">BIO</option>
+                                   </select>
+                              {% else %}
+                                   <select class="form-control w-100" id="branch" name="branch"  required>
+                                        <option value="">Select Branch</option>
+                                        <option value="CSE" >CSE</option>
+                                        <option value="ECE">ECE</option>
+                                        <option value="EEE">EEE</option>
+                                        <option value="MECH">MECH</option>
+                                        <option value="CHEM">CHEM</option>
+                                        <option value="CIVIL">CIVIL</option>
+                                        <option value="MME">MME</option>
+                                        <option value="BIO" selected>BIO</option>
+                                   </select>
+                              {% endif %}
+                         {% else %}
+                              <select class="form-control w-100" id="branch" name="branch"  required>
+                              <option value="">Select Branch</option>
+                              <option value="CSE" >CSE</option>
+                              <option value="ECE">ECE</option>
+                              <option value="EEE">EEE</option>
+                              <option value="MECH">MECH</option>
+                              <option value="CHEM">CHEM</option>
+                              <option value="CIVIL">CIVIL</option>
+                              <option value="MME">MME</option>
+                              <option value="BIO">BIO</option>
+                          </select>
+                          {% endif %}
+
+                              </div>
+                              </div>
+                          
                               <div class="form-group">
                                    <label  class="cols-sm-2 control-label">Email ID :</label>
                                    <div class="cols-sm-10">
+                                   {%if employee%}
+                                        <input type="text" value="{{employee.email_id}}"class="form-control" name="email"  placeholder="Email ID" required>
+                                   {%else%}     
                                         <input type="text" class="form-control" name="email"  placeholder="Email ID" required>
-                                        
+                                   {%endif%}
                                    </div>
                               </div>
                               <div class="form-group">
                                    <label  class="cols-sm-2 control-label">Mobile No :</label>
                                    <div class="cols-sm-10">
+                                   {%if employee%}
+                                        <input type="text" value="{{employee.phone}}"class="form-control" name="ph" pattern="[0-9]{10}"  placeholder="Mobile No" required>
+                                   {%else%}
                                         <input type="text" class="form-control" name="ph" pattern="[0-9]{10}"  placeholder="Mobile No" required>
-                                        
+                                   {%endif%}     
                                    </div>
                               </div>
-                              <div class="form-group">
-                                   <label for ="Details" class="cols-sm-2 control-label">Address :</label>
-                                        <textarea class="form-control" name="address" rows="4" placeholder="Address"></textarea>
-                                   
-                              </div>
+                              <div class=" form-group">
+                              <label  class="cols-sm-2 control-label">Block :</label>
+                                   <div class="cols-sm-10">
+                                        <select class="form-control w-100"  name="block"  required>
+                                        <option value="">Select Block</option>
+                                        
+                                             {%for stud in std %}
+                                                  {%if block%}
+                                                       {%if block.block_id == stud.block_id %}
+                                                            <option selected value="{{stud.block_id}}">{{stud.block_name}}</option>
+                                                       {%else%}
+                                                            <option  value="{{stud.block_id}}">{{stud.block_name}}</option>
+                                                       {%endif%}
+                                                  {%else%}
+                                                       <option  value="{{stud.block_id}}">{{stud.block_name}}</option>
+                                                  {%endif%}
+
+                                             {%endfor%}
+                                             <option value="null" > None </option>
                               
+                                        </select>
                               
 
 
                               
                               <div class="form-group row align-items-center sign-btn ml-2">
-                                   <input type="submit" id="submit" value="Submit" class="btn float-right sign_btn" >
+                                   <input type="submit" id="submit" name="submit_btn" value="Submit" class="btn float-right sign_btn" >
                                    <span class ="btn-space"></span>
                                    </form>
                                    
